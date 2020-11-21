@@ -56,16 +56,25 @@ void pruebas_arbol_borrar(){
     pa2m_afirmar(arbol_borrar(NULL, NULL) == ERROR, "No borra si recibe árbol nulo");
     abb_t* abb = arbol_crear(&comparador, NULL);
     pa2m_afirmar(arbol_borrar(abb, NULL) == ERROR, "No borra si recibe árbol vacío");
-    int a = 1, b = 2, c = 3, d = 4, e = 5, f = 6;
-    printf("  Inserto 3, 2, 1, 5, 4, 6\n");
+    int a = 1, b = 2, c = 3, d = 4, e = 5, f = 6, g = 7;
+    printf("  Inserto 3, 2, 1, 6, 4, 7, 5 (en ese orden)\n");
     arbol_insertar(abb, &c);
     arbol_insertar(abb, &b);
     arbol_insertar(abb, &a);
-    arbol_insertar(abb, &e);
-    arbol_insertar(abb, &d);
     arbol_insertar(abb, &f);
+    arbol_insertar(abb, &d);
+    arbol_insertar(abb, &g);
+    arbol_insertar(abb, &e);
     pa2m_afirmar(arbol_borrar(abb, &a) == SIN_ERROR, "Borro una hoja");
     pa2m_afirmar(abb->nodo_raiz->izquierda->izquierda == NULL, "Padre de la hoja anterior apunta ahora a NULL");
+    printf("  Vuelvo a insertar el 1\n");
+    arbol_insertar(abb, &a);
+    pa2m_afirmar(arbol_borrar(abb, &b) == SIN_ERROR, "Borro el 2 que tiene un solo hijo (el 2 era hijo izquierdo del 3)");
+    pa2m_afirmar(abb->nodo_raiz->izquierda->elemento == &a, "Ahora el 3 a su izquierda apunta al 1")
+    pa2m_afirmar(arbol_borrar(abb, &f) == SIN_ERROR, "Borro el 6 que tiene dos hijos (4 a la izquierda, 7 a la derecha)");
+    pa2m_afirmar(abb->nodo_raiz->derecha->elemento == &e, "Ahora el 5 ocupa el lugar que era del 6");
+    pa2m_afirmar(abb->nodo_raiz->derecha->izquierda->elemento == &d, "El 4 ahora es hijo izquierdo del 5");
+    pa2m_afirmar(abb->nodo_raiz->derecha->derecha->elemento == &g, "El 7 ahora es hijo derecho del 5");
     arbol_destruir(abb);
 }
 

@@ -66,15 +66,31 @@ void* borrar_nodo(nodo_abb_t* nodo, abb_comparador comparador, abb_liberar_eleme
     }else if(comparacion == 1){
         nodo->izquierda = borrar_nodo(nodo->izquierda, comparador, destructor, elemento, elemento_borrado);
     } else {
-        // SI LLEGA ACA ES QUE YA LO ENCONTRO -> HAY QUE BORRAR
         if(nodo->izquierda && nodo->derecha){
-            //tiene dos hijos
-        } else if (nodo->izquierda || nodo->derecha){
-            //tiene un hijo
-        } else {
-            //no tiene hijos -> es hoja
+            nodo_abb_t* nodo_aux = nodo->izquierda;
+            nodo_abb_t* nodo_a_recolocar = nodo_aux->derecha;
+            while(nodo_a_recolocar->derecha){
+                nodo_aux = nodo_a_recolocar;
+                nodo_a_recolocar = nodo_a_recolocar->derecha;
+            }
+            nodo_aux->derecha = NULL;
+            nodo_a_recolocar->izquierda = nodo->izquierda;
+            nodo_a_recolocar->derecha = nodo->derecha;
             if(destructor)
-                destructor(elemento);
+                destructor(nodo->elemento);
+            free(nodo);
+            *elemento_borrado = true;
+            return nodo_a_recolocar;
+        } else if (nodo->izquierda || nodo->derecha){
+            nodo_abb_t* hijo = nodo->izquierda ? nodo->izquierda : nodo->derecha;
+            if(destructor)
+                destructor(nodo->elemento);
+            free(nodo);
+            *elemento_borrado = true;
+            return hijo;
+        } else {
+            if(destructor)
+                destructor(nodo->elemento);
             free(nodo);
             *elemento_borrado = true;
             return NULL;
