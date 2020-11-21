@@ -51,7 +51,23 @@ void pruebas_arbol_insertar(){
     arbol_destruir(abb);
 }
 
-//pruebas borrar
+void pruebas_arbol_borrar(){
+    pa2m_nuevo_grupo("Pruebas árbol borrar");
+    pa2m_afirmar(arbol_borrar(NULL, NULL) == ERROR, "No borra si recibe árbol nulo");
+    abb_t* abb = arbol_crear(&comparador, NULL);
+    pa2m_afirmar(arbol_borrar(abb, NULL) == ERROR, "No borra si recibe árbol vacío");
+    int a = 1, b = 2, c = 3, d = 4, e = 5, f = 6;
+    printf("  Inserto 3, 2, 1, 5, 4, 6\n");
+    arbol_insertar(abb, &c);
+    arbol_insertar(abb, &b);
+    arbol_insertar(abb, &a);
+    arbol_insertar(abb, &e);
+    arbol_insertar(abb, &d);
+    arbol_insertar(abb, &f);
+    pa2m_afirmar(arbol_borrar(abb, &a) == SIN_ERROR, "Borro una hoja");
+    pa2m_afirmar(abb->nodo_raiz->izquierda->izquierda == NULL, "Padre de la hoja anterior apunta ahora a NULL");
+    arbol_destruir(abb);
+}
 
 void pruebas_arbol_buscar(){
     pa2m_nuevo_grupo("Pruebas árbol buscar");
@@ -125,7 +141,7 @@ void pruebas_destructor_borrar(){
 int main(){
     pruebas_arbol_crear();
     pruebas_arbol_insertar();
-    //pruebas borrar
+    pruebas_arbol_borrar();
     pruebas_arbol_buscar();
     pruebas_arbol_raiz();
     pruebas_arbol_vacio();
