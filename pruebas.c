@@ -147,6 +147,188 @@ void pruebas_destructor_borrar(){
     arbol_destruir(abb);
 }
 
+void mostrar_elementos_vector(void** array, size_t cant){
+    for(int i = 0; i < cant; i++){
+        printf("%d ", *(int*)array[i]);
+    }
+    printf("\n");
+}
+
+void pruebas_recorrido_inorden(){
+    pa2m_nuevo_grupo("Pruebas recorrido inorden");
+    void* numeros[50];
+    pa2m_afirmar(arbol_recorrido_inorden(NULL, numeros, 20) == 0, "Si el árbol es nulo recorre 0 elementos");
+    abb_t* abb = arbol_crear(&comparador, NULL);
+    pa2m_afirmar(arbol_recorrido_inorden(abb, NULL, 20) == 0, "Si el array es nulo recorre 0 elementos");
+    pa2m_afirmar(arbol_recorrido_inorden(abb, numeros, 0) == 0, "Si el tamaño del array es nulo recorre 0 elementos");
+    int a = 1, b = 2, c = 3, d = 4, e = 5, f = 6, g = 7;
+    printf("  Inserto 3, 2, 1, 6, 4, 7, 5 (en ese orden)\n");
+    arbol_insertar(abb, &c);
+    arbol_insertar(abb, &b);
+    arbol_insertar(abb, &a);
+    arbol_insertar(abb, &f);
+    arbol_insertar(abb, &d);
+    arbol_insertar(abb, &g);
+    arbol_insertar(abb, &e);
+    size_t elementos_recorridos = arbol_recorrido_inorden(abb, numeros, 20);
+    pa2m_afirmar(elementos_recorridos == 7, "Recorre todos los elementos del árbol");
+    printf("  Muestro elementos recorridos inorder: ");
+    mostrar_elementos_vector(numeros, elementos_recorridos);
+    elementos_recorridos = arbol_recorrido_inorden(abb, numeros, 3);
+    pa2m_afirmar(elementos_recorridos == 3, "Recorre 3 elementos del árbol");
+    printf("  Muestro los 3 elementos recorridos inorder: ");
+    mostrar_elementos_vector(numeros, elementos_recorridos);
+    arbol_destruir(abb);
+}
+
+void pruebas_recorrido_preorden(){
+    pa2m_nuevo_grupo("Pruebas recorrido preorden");
+    void* numeros[50];
+    pa2m_afirmar(arbol_recorrido_preorden(NULL, numeros, 20) == 0, "Si el árbol es nulo recorre 0 elementos");
+    abb_t* abb = arbol_crear(&comparador, NULL);
+    pa2m_afirmar(arbol_recorrido_preorden(abb, NULL, 20) == 0, "Si el array es nulo recorre 0 elementos");
+    pa2m_afirmar(arbol_recorrido_preorden(abb, numeros, 0) == 0, "Si el tamaño del array es nulo recorre 0 elementos");
+    int a = 1, b = 2, c = 3, d = 4, e = 5, f = 6, g = 7;
+    printf("  Inserto 3, 2, 1, 6, 4, 7, 5 (en ese orden)\n");
+    arbol_insertar(abb, &c);
+    arbol_insertar(abb, &b);
+    arbol_insertar(abb, &a);
+    arbol_insertar(abb, &f);
+    arbol_insertar(abb, &d);
+    arbol_insertar(abb, &g);
+    arbol_insertar(abb, &e);
+    size_t elementos_recorridos = arbol_recorrido_preorden(abb, numeros, 20);
+    pa2m_afirmar(elementos_recorridos == 7, "Recorre todos los elementos del árbol");
+    printf("  Muestro elementos recorridos preorden: ");
+    mostrar_elementos_vector(numeros, elementos_recorridos);
+    elementos_recorridos = arbol_recorrido_preorden(abb, numeros, 3);
+    pa2m_afirmar(elementos_recorridos == 3, "Recorre 3 elementos del árbol");
+    printf("  Muestro los 3 elementos recorridos preorden: ");
+    mostrar_elementos_vector(numeros, elementos_recorridos);
+    arbol_destruir(abb);
+}
+
+void pruebas_recorrido_postorden(){
+    pa2m_nuevo_grupo("Pruebas recorrido postorden");
+    void* numeros[50];
+    pa2m_afirmar(arbol_recorrido_postorden(NULL, numeros, 20) == 0, "Si el árbol es nulo recorre 0 elementos");
+    abb_t* abb = arbol_crear(&comparador, NULL);
+    pa2m_afirmar(arbol_recorrido_postorden(abb, NULL, 20) == 0, "Si el array es nulo recorre 0 elementos");
+    pa2m_afirmar(arbol_recorrido_postorden(abb, numeros, 0) == 0, "Si el tamaño del array es nulo recorre 0 elementos");
+    int a = 1, b = 2, c = 3, d = 4, e = 5, f = 6, g = 7;
+    printf("  Inserto 3, 2, 1, 6, 4, 7, 5 (en ese orden)\n");
+    arbol_insertar(abb, &c);
+    arbol_insertar(abb, &b);
+    arbol_insertar(abb, &a);
+    arbol_insertar(abb, &f);
+    arbol_insertar(abb, &d);
+    arbol_insertar(abb, &g);
+    arbol_insertar(abb, &e);
+    size_t elementos_recorridos = arbol_recorrido_postorden(abb, numeros, 20);
+    pa2m_afirmar(elementos_recorridos == 7, "Recorre todos los elementos del árbol");
+    printf("  Muestro elementos recorridos postorden: ");
+    mostrar_elementos_vector(numeros, elementos_recorridos);
+    elementos_recorridos = arbol_recorrido_postorden(abb, numeros, 3);
+    pa2m_afirmar(elementos_recorridos == 3, "Recorre 3 elementos del árbol");
+    printf("  Muestro los 3 elementos recorridos postorden: ");
+    mostrar_elementos_vector(numeros, elementos_recorridos);
+    arbol_destruir(abb);
+}
+
+bool mostrar_elemento_al_iterar(void* elemento, void* extra){
+    printf("%d ", *(int*)elemento);
+    return false;
+}
+
+bool mostrar_elemento_al_iterar_hasta_el_4(void* elemento, void* extra){
+    printf("%d ", *(int*)elemento);
+    return *(int*)elemento == 4;
+}
+
+void pruebas_con_cada_elemento_inorden(){
+    pa2m_nuevo_grupo("Pruebas con cada elemento inorden");
+    int extra = 0;
+    pa2m_afirmar(abb_con_cada_elemento(NULL, ABB_RECORRER_INORDEN, &mostrar_elemento_al_iterar, &extra) == 0, "Si el árbol es nulo recorre 0 elementos");
+    abb_t* abb = arbol_crear(&comparador, NULL);
+    pa2m_afirmar(abb_con_cada_elemento(abb, ABB_RECORRER_INORDEN, NULL, &extra) == 0, "Si la funcion es nula recorre 0 elementos");
+    pa2m_afirmar(abb_con_cada_elemento(abb, 55, &mostrar_elemento_al_iterar, &extra) == 0, "Si el recorrido no existe recorre 0 elementos");
+    pa2m_afirmar(abb_con_cada_elemento(abb, ABB_RECORRER_INORDEN, &mostrar_elemento_al_iterar, &extra) == 0, "Si el árbol está vacío recorre 0 elementos");
+    int a = 1, b = 2, c = 3, d = 4, e = 5, f = 6, g = 7;
+    printf("  Inserto 3, 2, 1, 6, 4, 7, 5 (en ese orden)\n");
+    arbol_insertar(abb, &c);
+    arbol_insertar(abb, &b);
+    arbol_insertar(abb, &a);
+    arbol_insertar(abb, &f);
+    arbol_insertar(abb, &d);
+    arbol_insertar(abb, &g);
+    arbol_insertar(abb, &e);
+    printf("  Imprimo elementos con interador interno de forma inorden:\n  ");
+    size_t iteraciones = abb_con_cada_elemento(abb, ABB_RECORRER_INORDEN, &mostrar_elemento_al_iterar, &extra);
+    printf("\n");
+    pa2m_afirmar(iteraciones == 7, "Iteró sobre 7 elementos");
+    printf("  Imprimo elementos con interador interno de forma inorden hasta el 3:\n  ");
+    iteraciones = abb_con_cada_elemento(abb, ABB_RECORRER_INORDEN, &mostrar_elemento_al_iterar_hasta_el_4, &extra);
+    printf("\n");
+    pa2m_afirmar(iteraciones == 4, "Iteró sobre 4 elementos");
+    arbol_destruir(abb);
+}
+
+void pruebas_con_cada_elemento_preorden(){
+    pa2m_nuevo_grupo("Pruebas con cada elemento preorden");
+    int extra = 0;
+    pa2m_afirmar(abb_con_cada_elemento(NULL, ABB_RECORRER_PREORDEN, &mostrar_elemento_al_iterar, &extra) == 0, "Si el árbol es nulo recorre 0 elementos");
+    abb_t* abb = arbol_crear(&comparador, NULL);
+    pa2m_afirmar(abb_con_cada_elemento(abb, ABB_RECORRER_PREORDEN, NULL, &extra) == 0, "Si la funcion es nula recorre 0 elementos");
+    pa2m_afirmar(abb_con_cada_elemento(abb, 55, &mostrar_elemento_al_iterar, &extra) == 0, "Si el recorrido no existe recorre 0 elementos");
+    pa2m_afirmar(abb_con_cada_elemento(abb, ABB_RECORRER_PREORDEN, &mostrar_elemento_al_iterar, &extra) == 0, "Si el árbol está vacío recorre 0 elementos");
+    int a = 1, b = 2, c = 3, d = 4, e = 5, f = 6, g = 7;
+    printf("  Inserto 3, 2, 1, 6, 4, 7, 5 (en ese orden)\n");
+    arbol_insertar(abb, &c);
+    arbol_insertar(abb, &b);
+    arbol_insertar(abb, &a);
+    arbol_insertar(abb, &f);
+    arbol_insertar(abb, &d);
+    arbol_insertar(abb, &g);
+    arbol_insertar(abb, &e);
+    printf("  Imprimo elementos con interador interno de forma preorden:\n  ");
+    size_t iteraciones = abb_con_cada_elemento(abb, ABB_RECORRER_PREORDEN, &mostrar_elemento_al_iterar, &extra);
+    printf("\n");
+    pa2m_afirmar(iteraciones == 7, "Iteró sobre 7 elementos");
+    printf("  Imprimo elementos con interador interno de forma preorden hasta el 3:\n  ");
+    iteraciones = abb_con_cada_elemento(abb, ABB_RECORRER_PREORDEN, &mostrar_elemento_al_iterar_hasta_el_4, &extra);
+    printf("\n");
+    pa2m_afirmar(iteraciones == 5, "Iteró sobre 5 elementos");
+    arbol_destruir(abb);
+}
+
+void pruebas_con_cada_elemento_postorden(){
+    pa2m_nuevo_grupo("Pruebas con cada elemento postorden");
+    int extra = 0;
+    pa2m_afirmar(abb_con_cada_elemento(NULL, ABB_RECORRER_POSTORDEN, &mostrar_elemento_al_iterar, &extra) == 0, "Si el árbol es nulo recorre 0 elementos");
+    abb_t* abb = arbol_crear(&comparador, NULL);
+    pa2m_afirmar(abb_con_cada_elemento(abb, ABB_RECORRER_POSTORDEN, NULL, &extra) == 0, "Si la funcion es nula recorre 0 elementos");
+    pa2m_afirmar(abb_con_cada_elemento(abb, 55, &mostrar_elemento_al_iterar, &extra) == 0, "Si el recorrido no existe recorre 0 elementos");
+    pa2m_afirmar(abb_con_cada_elemento(abb, ABB_RECORRER_POSTORDEN, &mostrar_elemento_al_iterar, &extra) == 0, "Si el árbol está vacío recorre 0 elementos");
+    int a = 1, b = 2, c = 3, d = 4, e = 5, f = 6, g = 7;
+    printf("  Inserto 3, 2, 1, 6, 4, 7, 5 (en ese orden)\n");
+    arbol_insertar(abb, &c);
+    arbol_insertar(abb, &b);
+    arbol_insertar(abb, &a);
+    arbol_insertar(abb, &f);
+    arbol_insertar(abb, &d);
+    arbol_insertar(abb, &g);
+    arbol_insertar(abb, &e);
+    printf("  Imprimo elementos con interador interno de forma postorden:\n  ");
+    size_t iteraciones = abb_con_cada_elemento(abb, ABB_RECORRER_POSTORDEN, &mostrar_elemento_al_iterar, &extra);
+    printf("\n");
+    pa2m_afirmar(iteraciones == 7, "Iteró sobre 7 elementos");
+    printf("  Imprimo elementos con interador interno de forma postorden hasta el 3:\n  ");
+    iteraciones = abb_con_cada_elemento(abb, ABB_RECORRER_POSTORDEN, &mostrar_elemento_al_iterar_hasta_el_4, &extra);
+    printf("\n");
+    pa2m_afirmar(iteraciones == 4, "Iteró sobre 4 elementos");
+    arbol_destruir(abb);
+}
+
 int main(){
     pruebas_arbol_crear();
     pruebas_arbol_insertar();
@@ -155,6 +337,12 @@ int main(){
     pruebas_arbol_raiz();
     pruebas_arbol_vacio();
     pruebas_destructor_borrar();
+    pruebas_recorrido_inorden();
+    pruebas_recorrido_preorden();
+    pruebas_recorrido_postorden();
+    pruebas_con_cada_elemento_inorden();
+    pruebas_con_cada_elemento_preorden();
+    pruebas_con_cada_elemento_postorden();
     pa2m_mostrar_reporte();
     return 0;
 }
