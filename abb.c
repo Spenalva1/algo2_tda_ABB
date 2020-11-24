@@ -20,16 +20,24 @@ abb_t* arbol_crear(abb_comparador comparador, abb_liberar_elemento destructor){
 /*
 *
 */
+nodo_abb_t* crear_nodo(void* elemento, nodo_abb_t* izquierda, nodo_abb_t* derecha){
+        nodo_abb_t* nodo = calloc(1, sizeof(nodo_abb_t));
+        if(!nodo)
+            return NULL;
+        nodo->elemento = elemento;
+        nodo->derecha = derecha;
+        nodo->izquierda = izquierda;
+        return nodo;
+}
+
+/*
+*
+*/
 nodo_abb_t* insertar_nodo(nodo_abb_t* nodo, abb_comparador comparador, void* elemento){
     if(!comparador)
         return NULL;
     if(!nodo){
-        nodo_abb_t* nodo_nuevo = calloc(1, sizeof(nodo_abb_t));
-        if(!nodo_nuevo)
-            return NULL;
-        nodo_nuevo->elemento = elemento;
-        nodo = nodo_nuevo;
-        return nodo;
+        return crear_nodo(elemento, NULL, NULL);
     }
     nodo_abb_t* nodo_aux;
     int comparacion = comparador(nodo->elemento, elemento);
@@ -60,7 +68,52 @@ int arbol_insertar(abb_t* arbol, void* elemento){
 /*
 *
 */
-void* borrar_nodo(nodo_abb_t* nodo, abb_comparador comparador, abb_liberar_elemento destructor, void* elemento, bool* elemento_borrado){
+nodo_abb_t* borrar_sin_hijos(nodo_abb_t* nodo, abb_liberar_elemento destructor){
+    if(destructor)
+        destructor(nodo->elemento);
+    free(nodo);
+    return NULL;
+}
+
+/*
+*
+*/
+nodo_abb_t* borrar_con_un_hijo(nodo_abb_t* nodo, abb_liberar_elemento destructor){
+    nodo_abb_t* hijo = nodo->izquierda ? nodo->izquierda : nodo->derecha;
+    if(destructor)
+        destructor(nodo->elemento);
+    free(nodo);
+    return hijo;
+}
+
+/*
+*
+*/
+nodo_abb_t* borrar_con_dos_hijos(nodo_abb_t* nodo, abb_liberar_elemento destructor){
+    nodo_abb_t* nodo_aux = nodo->izquierda;
+    nodo_abb_t* nodo_a_recolocar = nodo_aux->derecha;
+    if(nodo_a_recolocar){
+        while(nodo_a_recolocar->derecha){
+            nodo_aux = nodo_a_recolocar;
+            nodo_a_recolocar = nodo_a_recolocar->derecha;
+        }
+        nodo_aux->derecha = NULL;
+        nodo_a_recolocar->izquierda = nodo->izquierda;
+        nodo_a_recolocar->derecha = nodo->derecha;
+    }else{
+        nodo_a_recolocar = nodo_aux;
+        nodo_a_recolocar->derecha = nodo->derecha;
+    }
+    if(destructor)
+        destructor(nodo->elemento);
+    free(nodo);
+    return nodo_a_recolocar;
+}
+
+/*
+*
+*/
+nodo_abb_t* borrar_nodo(nodo_abb_t* nodo, abb_comparador comparador, abb_liberar_elemento destructor, void* elemento, bool* elemento_borrado){
     if(!comparador || !nodo)
         return NULL;
     int comparacion = comparador(nodo->elemento, elemento);
@@ -69,39 +122,13 @@ void* borrar_nodo(nodo_abb_t* nodo, abb_comparador comparador, abb_liberar_eleme
     }else if(comparacion == 1){
         nodo->izquierda = borrar_nodo(nodo->izquierda, comparador, destructor, elemento, elemento_borrado);
     } else {
+        *elemento_borrado = true;
         if(nodo->izquierda && nodo->derecha){
-            nodo_abb_t* nodo_aux = nodo->izquierda;
-            nodo_abb_t* nodo_a_recolocar = nodo_aux->derecha;
-            if(nodo_a_recolocar){
-                while(nodo_a_recolocar->derecha){
-                    nodo_aux = nodo_a_recolocar;
-                    nodo_a_recolocar = nodo_a_recolocar->derecha;
-                }
-                nodo_aux->derecha = NULL;
-                nodo_a_recolocar->izquierda = nodo->izquierda;
-                nodo_a_recolocar->derecha = nodo->derecha;
-            }else{
-                nodo_a_recolocar = nodo_aux;
-                nodo_a_recolocar->derecha = nodo->derecha;
-            }
-            if(destructor)
-                destructor(nodo->elemento);
-            free(nodo);
-            *elemento_borrado = true;
-            return nodo_a_recolocar;
+            return borrar_con_dos_hijos(nodo, destructor);
         } else if (nodo->izquierda || nodo->derecha){
-            nodo_abb_t* hijo = nodo->izquierda ? nodo->izquierda : nodo->derecha;
-            if(destructor)
-                destructor(nodo->elemento);
-            free(nodo);
-            *elemento_borrado = true;
-            return hijo;
+            return borrar_con_un_hijo(nodo, destructor);
         } else {
-            if(destructor)
-                destructor(nodo->elemento);
-            free(nodo);
-            *elemento_borrado = true;
-            return NULL;
+            return borrar_sin_hijos(nodo, destructor);
         }
     }
     return nodo;
