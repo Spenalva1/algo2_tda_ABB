@@ -18,20 +18,20 @@ abb_t* arbol_crear(abb_comparador comparador, abb_liberar_elemento destructor){
 }
 
 /*
-*
+*   crea un nodo_abb_t que apuntara al elemento recibido y tendra de hijos a izquierda y derecha.
 */
 nodo_abb_t* crear_nodo(void* elemento, nodo_abb_t* izquierda, nodo_abb_t* derecha){
-        nodo_abb_t* nodo = calloc(1, sizeof(nodo_abb_t));
-        if(!nodo)
-            return NULL;
-        nodo->elemento = elemento;
-        nodo->derecha = derecha;
-        nodo->izquierda = izquierda;
-        return nodo;
+    nodo_abb_t* nodo = calloc(1, sizeof(nodo_abb_t));
+    if(!nodo)
+        return NULL;
+    nodo->elemento = elemento;
+    nodo->derecha = derecha;
+    nodo->izquierda = izquierda;
+    return nodo;
 }
 
 /*
-*
+*   busca recursivamente la posicion para insertar el nodo recibido (Se respetará el orden de la función comparar) y lo inserta
 */
 nodo_abb_t* insertar_nodo(nodo_abb_t* nodo, abb_comparador comparador, void* elemento){
     if(!comparador)
@@ -66,7 +66,7 @@ int arbol_insertar(abb_t* arbol, void* elemento){
 }
 
 /*
-*
+*   libera el espacio en memoria ocupado por un nodo que no tenga hijos
 */
 nodo_abb_t* borrar_sin_hijos(nodo_abb_t* nodo, abb_liberar_elemento destructor){
     if(destructor)
@@ -76,7 +76,8 @@ nodo_abb_t* borrar_sin_hijos(nodo_abb_t* nodo, abb_liberar_elemento destructor){
 }
 
 /*
-*
+*   libera el espacio en memoria ocupado por un nodo que tenga un hijo. Retorna el puntero al hijo para que 
+*   ocupe la posicion de su anterior padre 
 */
 nodo_abb_t* borrar_con_un_hijo(nodo_abb_t* nodo, abb_liberar_elemento destructor){
     nodo_abb_t* hijo = nodo->izquierda ? nodo->izquierda : nodo->derecha;
@@ -87,7 +88,9 @@ nodo_abb_t* borrar_con_un_hijo(nodo_abb_t* nodo, abb_liberar_elemento destructor
 }
 
 /*
-*
+*   libera el espacio en memoria ocupado por un nodo que tenga dos hijos. Se encarga de ocupar la posicion del 
+*   nodo por el mayor de los menores (el que esté más a la derecha a la izquierda del nodo recibido) para conservar
+*   el orden del ABB
 */
 nodo_abb_t* borrar_con_dos_hijos(nodo_abb_t* nodo, abb_liberar_elemento destructor){
     nodo_abb_t* nodo_aux = nodo->izquierda;
@@ -111,7 +114,7 @@ nodo_abb_t* borrar_con_dos_hijos(nodo_abb_t* nodo, abb_liberar_elemento destruct
 }
 
 /*
-*
+*   busca el nodo cuyo elemento coincida con el elemento recibido y se encarga de borrarlo, liberando la memoria, respetando el orden del ABB
 */
 nodo_abb_t* borrar_nodo(nodo_abb_t* nodo, abb_comparador comparador, abb_liberar_elemento destructor, void* elemento, bool* elemento_borrado){
     if(!comparador || !nodo)
@@ -143,7 +146,7 @@ int arbol_borrar(abb_t* arbol, void* elemento){
 }
 
 /*
-*
+*   Busca el nodo cuyo elemento coincida con elemento recibido
 */
 void* buscar_nodo(nodo_abb_t* nodo, abb_comparador comparador, void* elemento){
     if(!nodo || !comparador)
@@ -190,7 +193,7 @@ void arbol_destruir(abb_t* arbol){
 }
 
 /*
-*
+*   Inserta en el array recibi los elementos guardados en el arbol, de forma inorden
 */
 void insertar_nodos_inorden(nodo_abb_t* nodo, void** array, size_t tamanio_array, size_t* elementos_insertados){
     if(!nodo || *elementos_insertados >= tamanio_array)
@@ -204,7 +207,7 @@ void insertar_nodos_inorden(nodo_abb_t* nodo, void** array, size_t tamanio_array
 }
 
 /*
-*
+*   Inserta en el array recibi los elementos guardados en el arbol, de forma preorden
 */
 void insertar_nodos_preorden(nodo_abb_t* nodo, void** array, size_t tamanio_array, size_t* elementos_insertados){
     if(!nodo || *elementos_insertados >= tamanio_array)
@@ -216,7 +219,7 @@ void insertar_nodos_preorden(nodo_abb_t* nodo, void** array, size_t tamanio_arra
 }
 
 /*
-*
+*   Inserta en el array recibi los elementos guardados en el arbol, de forma postorden
 */
 void insertar_nodos_postorden(nodo_abb_t* nodo, void** array, size_t tamanio_array, size_t* elementos_insertados){
     if(!nodo || *elementos_insertados >= tamanio_array)
@@ -230,7 +233,7 @@ void insertar_nodos_postorden(nodo_abb_t* nodo, void** array, size_t tamanio_arr
 }
 
 /*
-*
+*   Inserta en el array recibido los elementos almacenados en el arbol de la forma recibida en "recorrido"
 */
 size_t recorridos(abb_t* arbol, void** array, size_t tamanio_array, int recorrido){
     if(arbol_vacio(arbol) || !array || tamanio_array == 0)
@@ -258,7 +261,7 @@ size_t arbol_recorrido_postorden(abb_t* arbol, void** array, size_t tamanio_arra
 }
 
 /*
-*
+*   Recorre los elementos del arbol de forma inorden llamando la función recibida con cada uno de ellos
 */
 bool iterar_nodos_inorden(nodo_abb_t* nodo, bool (*fn) (void*, void*), void* extra, size_t* iteraciones){
     if(!nodo)
@@ -275,7 +278,7 @@ bool iterar_nodos_inorden(nodo_abb_t* nodo, bool (*fn) (void*, void*), void* ext
 }
 
 /*
-*
+*   Recorre los elementos del arbol de forma preorden llamando la función recibida con cada uno de ellos
 */
 bool iterar_nodos_preorden(nodo_abb_t* nodo, bool (*fn) (void*, void*), void* extra, size_t* iteraciones){
     if(!nodo)
@@ -292,7 +295,7 @@ bool iterar_nodos_preorden(nodo_abb_t* nodo, bool (*fn) (void*, void*), void* ex
 }
 
 /*
-*
+*   Recorre los elementos del arbol de forma post llamando la función recibida con cada uno de ellos
 */
 bool iterar_nodos_postorden(nodo_abb_t* nodo, bool (*fn) (void*, void*), void* extra, size_t* iteraciones){
     if(!nodo)
