@@ -100,7 +100,7 @@ nodo_abb_t* borrar_con_dos_hijos(nodo_abb_t* nodo, abb_liberar_elemento destruct
             nodo_aux = nodo_a_recolocar;
             nodo_a_recolocar = nodo_a_recolocar->derecha;
         }
-        nodo_aux->derecha = NULL;
+        nodo_aux->derecha = nodo_a_recolocar->izquierda ? nodo_a_recolocar->izquierda : NULL;
         nodo_a_recolocar->izquierda = nodo->izquierda;
         nodo_a_recolocar->derecha = nodo->derecha;
     }else{
