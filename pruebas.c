@@ -13,7 +13,8 @@ int comparador(void* elemento_1, void* elemento_2){
 }
 
 void destructor(void* elemento){
-    free((int*)elemento);
+    if(elemento)
+        free((int*)elemento);
 }
 
 void pruebas_arbol_crear(){
@@ -329,8 +330,41 @@ void pruebas_con_cada_elemento_postorden(){
     arbol_destruir(abb);
 }
 
+void insertar_balanceadamente(abb_t* abb, int** numeros, int cantidad, int* insertados){
+    int mitad = cantidad / 2;
+    if(arbol_insertar(abb, *(numeros+mitad)) == SIN_ERROR)
+        (*insertados)++;
+    if(mitad <= 0)
+        return;
+    insertar_balanceadamente(abb, numeros, mitad, insertados);
+    if(mitad == cantidad-1)
+        return;
+    insertar_balanceadamente(abb, numeros + mitad + 1, (cantidad - mitad - 1), insertados);
+}
+
+void pruebas_con_muchos_nodos(){
+    pa2m_nuevo_grupo("Pruebas con muchos nodos");
+    int* numeros[1000];
+    for(int i = 0; i < 1000; i++){
+        numeros[i] = malloc(sizeof(int));
+        *(numeros[i]) = i;
+    }
+    int insertados = 0;
+    abb_t* abb = arbol_crear(comparador, destructor);
+    insertar_balanceadamente(abb, numeros, 1000, &insertados);
+    pa2m_afirmar(insertados == 1000, "Se insertaron 1000 elementos");
+    int* numero = malloc(sizeof(int));
+    *numero = 1000;
+    pa2m_afirmar(arbol_insertar(abb, numero) == SIN_ERROR, "Inserto un elemento más");
+    pa2m_afirmar(*((int*)arbol_buscar(abb, numero)) == 1000, "El último elemento insertado se encuentra en el arbol");
+    pa2m_afirmar(arbol_borrar(abb, numeros[999]) == SIN_ERROR, "Borro nodo con un hijo");
+    pa2m_afirmar(arbol_borrar(abb, numero) == SIN_ERROR, "Borro nodo sin hijos");    
+    pa2m_afirmar(arbol_borrar(abb, numeros[500]) == SIN_ERROR, "Borro nodo con dos hijos");
+    arbol_destruir(abb);
+}
+
 int main(){
-    pruebas_arbol_crear();
+    /*pruebas_arbol_crear();
     pruebas_arbol_insertar();
     pruebas_arbol_borrar();
     pruebas_arbol_buscar();
@@ -342,7 +376,8 @@ int main(){
     pruebas_recorrido_postorden();
     pruebas_con_cada_elemento_inorden();
     pruebas_con_cada_elemento_preorden();
-    pruebas_con_cada_elemento_postorden();
+    pruebas_con_cada_elemento_postorden();*/
+    pruebas_con_muchos_nodos();
     pa2m_mostrar_reporte();
     return 0;
 }
