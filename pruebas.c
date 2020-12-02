@@ -342,29 +342,42 @@ void insertar_balanceadamente(abb_t* abb, int** numeros, int cantidad, int* inse
     insertar_balanceadamente(abb, numeros + mitad + 1, (cantidad - mitad - 1), insertados);
 }
 
+bool contar_iteraciones(void* elemento, void* extra){
+    (*((int*)extra))++;
+    return false;
+}
+
 void pruebas_con_muchos_nodos(){
     pa2m_nuevo_grupo("Pruebas con muchos nodos");
-    int* numeros[1000];
-    for(int i = 0; i < 1000; i++){
-        numeros[i] = malloc(sizeof(int));
-        *(numeros[i]) = i;
+    int* numeros_punteros[2000];
+    for(int i = 0; i < 2000; i++){
+        numeros_punteros[i] = malloc(sizeof(int));
+        *(numeros_punteros[i]) = i;
     }
     int insertados = 0;
     abb_t* abb = arbol_crear(comparador, destructor);
-    insertar_balanceadamente(abb, numeros, 1000, &insertados);
-    pa2m_afirmar(insertados == 1000, "Se insertaron 1000 elementos");
+    insertar_balanceadamente(abb, numeros_punteros, 2000, &insertados);
+    pa2m_afirmar(insertados == 2000, "Se insertaron 2000 elementos");
+    void *numeros[2000];
+    printf("  Recorro el arbol con arbol_recorrer inorder\n");
+    pa2m_afirmar(arbol_recorrido_inorden(abb, numeros, 2000) == 2000, "Se recorrieron todos los elementos")
+    printf("  Recorro el arbol con iterador interno inorder\n");
+    int iterados = 0;
+    abb_con_cada_elemento(abb, ABB_RECORRER_INORDEN, &contar_iteraciones, &iterados);
+    pa2m_afirmar(iterados == 2000, "Se iteró por todos los elementos todos los elementos")
+    printf("ITERADOS: %d\n", iterados);
     int* numero = malloc(sizeof(int));
-    *numero = 1000;
+    *numero = 2000;
     pa2m_afirmar(arbol_insertar(abb, numero) == SIN_ERROR, "Inserto un elemento más");
-    pa2m_afirmar(*((int*)arbol_buscar(abb, numero)) == 1000, "El último elemento insertado se encuentra en el arbol");
-    pa2m_afirmar(arbol_borrar(abb, numeros[999]) == SIN_ERROR, "Borro nodo con un hijo");
+    pa2m_afirmar(*((int*)arbol_buscar(abb, numero)) == 2000, "El último elemento insertado se encuentra en el arbol");
+    pa2m_afirmar(arbol_borrar(abb, numeros_punteros[1999]) == SIN_ERROR, "Borro nodo con un hijo");
     pa2m_afirmar(arbol_borrar(abb, numero) == SIN_ERROR, "Borro nodo sin hijos");    
-    pa2m_afirmar(arbol_borrar(abb, numeros[500]) == SIN_ERROR, "Borro nodo con dos hijos");
+    pa2m_afirmar(arbol_borrar(abb, numeros_punteros[1000]) == SIN_ERROR, "Borro nodo con dos hijos");
     arbol_destruir(abb);
 }
 
 int main(){
-    /*pruebas_arbol_crear();
+    pruebas_arbol_crear();
     pruebas_arbol_insertar();
     pruebas_arbol_borrar();
     pruebas_arbol_buscar();
@@ -376,7 +389,7 @@ int main(){
     pruebas_recorrido_postorden();
     pruebas_con_cada_elemento_inorden();
     pruebas_con_cada_elemento_preorden();
-    pruebas_con_cada_elemento_postorden();*/
+    pruebas_con_cada_elemento_postorden();
     pruebas_con_muchos_nodos();
     pa2m_mostrar_reporte();
     return 0;
