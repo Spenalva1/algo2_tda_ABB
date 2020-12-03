@@ -41,7 +41,7 @@ nodo_abb_t* insertar_nodo(nodo_abb_t* nodo, abb_comparador comparador, void* ele
     }
     nodo_abb_t* nodo_aux;
     int comparacion = comparador(nodo->elemento, elemento);
-    if(comparacion == -1){
+    if(comparacion < 0){
         nodo_aux = insertar_nodo(nodo->derecha, comparador, elemento);
         if(!nodo_aux)
             return NULL;
@@ -121,9 +121,9 @@ nodo_abb_t* borrar_nodo(nodo_abb_t* nodo, abb_comparador comparador, abb_liberar
     if(!comparador || !nodo)
         return NULL;
     int comparacion = comparador(nodo->elemento, elemento);
-    if(comparacion == -1){
+    if(comparacion < 0){
         nodo->derecha = borrar_nodo(nodo->derecha, comparador, destructor, elemento, elemento_borrado);
-    }else if(comparacion == 1){
+    }else if(comparacion > 0){
         nodo->izquierda = borrar_nodo(nodo->izquierda, comparador, destructor, elemento, elemento_borrado);
     } else {
         *elemento_borrado = true;
@@ -153,11 +153,11 @@ void* buscar_nodo(nodo_abb_t* nodo, abb_comparador comparador, void* elemento){
     if(!nodo || !comparador)
         return NULL;
     int comparacion = comparador(nodo->elemento, elemento);
-    if(comparacion == -1)
+    if(comparacion < 0)
         return buscar_nodo(nodo->derecha, comparador, elemento);
-    else if (comparacion == 1)
+    else if (comparacion > 0)
         return buscar_nodo(nodo->izquierda, comparador, elemento);
-    return elemento;
+    return nodo->elemento;
 }
 
 void* arbol_buscar(abb_t* arbol, void* elemento){
